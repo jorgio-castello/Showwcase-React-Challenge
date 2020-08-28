@@ -12,10 +12,12 @@ class TrieNode {
   getUniversity() {
     const universityLetters = [];
     let node = this;
-    while (node.parent !== null) {
+    while (node !== null) {
       universityLetters.unshift(node.letter);
       node = node.parent;
     }
     return universityLetters.join('');
   }
 }
+
+module.exports = TrieNode;

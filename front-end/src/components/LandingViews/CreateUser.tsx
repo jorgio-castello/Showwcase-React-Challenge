@@ -1,10 +1,11 @@
 import React, { SyntheticEvent, useContext, useState } from 'react';
 import { UserContext, ViewsContext } from '../../models/App';
+import User from '../../models/User';
 
 const CreateUser = () => {
   const { currentView, setCurrentView, Views } = useContext(ViewsContext);
   const { user, setUser } = useContext(UserContext);
-  const [inputValue, setInputValue] = useState<string>(user);
+  const [inputValue, setInputValue] = useState(user.name);
 
   if (currentView !== Views.CreateUser) {
     return null;
@@ -12,7 +13,9 @@ const CreateUser = () => {
 
   const handleCreateUser = (e: SyntheticEvent): void => {
     e.preventDefault();
-    setUser(inputValue);
+    const user = new User(inputValue);
+    user.init();
+    setUser(user);
     setCurrentView(Views.Main);
   }
 

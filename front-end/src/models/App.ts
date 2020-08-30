@@ -1,5 +1,5 @@
 import React from 'react';
-import Education from '../models/Education';
+import User from '../models/User';
 
 export enum Views {
   Intro,
@@ -8,17 +8,13 @@ export enum Views {
 }
 
 type UserContextProps = {
-  user: string,
+  user: User,
   setUser: Function,
-  education: Education[],
-  setEducation: Function,
 }
 
 export const UserContext = React.createContext<UserContextProps>({
-  user: '',
-  setUser: (name: string): void => { },
-  education: [],
-  setEducation: (newEducation: Education) => { }
+  user: new User(''),
+  setUser: (updateUser: User): void => { },
 });
 
 export const ViewsContext = React.createContext({

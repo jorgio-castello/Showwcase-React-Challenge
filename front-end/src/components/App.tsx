@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { ViewsContext, Views } from '../models/App';
+import { UserContext, ViewsContext, Views } from '../models/App';
 import Intro from './LandingViews/Intro';
 import CreateUser from './LandingViews/CreateUser';
+import Main from './Main';
 
 const App = () => {
+  // User State & Context
+  const [user, setUser] = useState('');
+  const userContext = { user, setUser };
+  // Views State & Context
   const [currentView, setCurrentView] = useState(Views.Intro);
-  const context = { currentView, setCurrentView, Views };
+  const viewContext = { currentView, setCurrentView, Views };
   return (
-    <ViewsContext.Provider value={context}>
+    <ViewsContext.Provider value={viewContext}>
       <Intro />
-      <CreateUser />
+      <UserContext.Provider value={userContext}>
+        <CreateUser />
+        <Main />
+      </UserContext.Provider>
     </ViewsContext.Provider>
   );
 }

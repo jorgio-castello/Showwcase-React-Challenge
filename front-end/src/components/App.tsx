@@ -7,7 +7,8 @@ import Main from './Main';
 const App = () => {
   // User State & Context
   const [user, setUser] = useState('');
-  const userContext = { user, setUser };
+  const [education, setEducation] = useState([]);
+  const userContext = { user, setUser, education, setEducation };
   // Views State & Context
   const [currentView, setCurrentView] = useState(Views.Intro);
   const viewContext = { currentView, setCurrentView, Views };

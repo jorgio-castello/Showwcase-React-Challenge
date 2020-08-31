@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { UserContext, ViewsContext, Views } from '../models/App';
+import React, { useState, useEffect } from 'react';
+import { parse } from 'flatted';
+import { getTrie } from '../fetchHelpers';
+import { TrieContext, UserContext, ViewsContext, Views } from '../models/App';
+import Trie from '../models/Trie';
 import User from '../models/User';
 import Intro from './LandingViews/Intro';
 import CreateUser from './LandingViews/CreateUser';
@@ -7,20 +10,36 @@ import Main from './Main';
 import EducationModal from './EducationModal';
 
 const App = () => {
+  // University Trie State & Context
+  const [trie, setTrie] = useState(new Trie());
+  const trieContext = { trie, setTrie };
+
   // User State & Context
   const [user, setUser] = useState(new User(''));
   const userContext = { user, setUser };
   // Views State & Context
-  const hideIntroScreen = localStorage.getItem('hideIntroScreen')
-  const [currentView, setCurrentView] = useState(hideIntroScreen ? Views.CreateUser : Views.Intro);
+  const [currentView, setCurrentView] = useState(localStorage.getItem('hideIntroScreen') ? Views.CreateUser : Views.Intro);
   const viewContext = { currentView, setCurrentView, Views };
+
+  useEffect(() => {
+    if (trie.root === null) {
+      getTrie()
+        .then(rawTrie => {
+          const universityTrie = Trie.copy(parse(rawTrie));
+          setTrie(universityTrie);
+        });
+    }
+  }, [trie]);
+
   return (
     <ViewsContext.Provider value={viewContext}>
       <Intro />
       <UserContext.Provider value={userContext}>
         <CreateUser />
         <Main />
-        <EducationModal />
+        <TrieContext.Provider value={trieContext}>
+          <EducationModal />
+        </TrieContext.Provider>
       </UserContext.Provider>
     </ViewsContext.Provider>
   );

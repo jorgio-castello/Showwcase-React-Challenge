@@ -1,12 +1,23 @@
-import React, { ChangeEvent, useContext, useState, SyntheticEvent } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState, SyntheticEvent } from 'react';
 import Education from '../models/Education';
 import { UserContext, ViewsContext } from '../models/App';
 
 const EducationModal = () => {
+  // Contexts
   const { user, setUser } = useContext(UserContext);
   const { currentView, setCurrentView, Views } = useContext(ViewsContext);
-  const [education, setEducation] = useState(user.getEducationInFocus());
+
+  // States
+  const [education, setEducation] = useState(new Education());
   const [newDescription, setNewDescription] = useState('');
+
+  // Effects
+  useEffect(() => {
+    const university = user.getEducationInFocus();
+    if (university && university.id !== education.id) {
+      setEducation(university);
+    }
+  })
 
   if (currentView !== Views.EducationModal) {
     return null;
@@ -51,6 +62,16 @@ const EducationModal = () => {
     setNewDescription('');
   }
 
+  const handleDelete = (e: SyntheticEvent): void => {
+    const id = e.currentTarget.getAttribute('id');
+    console.log(id);
+    if (id) {
+      user.deleteEducation(id);
+    }
+    setUser(user);
+    setCurrentView(Views.Main);
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <h3>Add Education</h3>
@@ -85,8 +106,9 @@ const EducationModal = () => {
       <label>
         Description
         <input id='description' placeholder="Include any highlights of your educational experience (optional)" value={newDescription} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewDescription(e.target.value)} />
-        <button type="button" onClick={handleDescriptionChange}>Add Description</button>
+        {education.id ? <button id={education.id} type="button" onClick={handleDescriptionChange}>Add Description</button> : null}
       </label>
+      {education.id ? <button id={education.id} type="button" onClick={handleDelete}>Delete Education</button> : null}
       <button type="submit">Submit</button>
     </form>
   );

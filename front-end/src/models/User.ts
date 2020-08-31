@@ -25,12 +25,33 @@ class User {
     }
   }
 
+  getUser(): User {
+    return this;
+  }
+
+  deleteEducation(id: string): void {
+    if (this.education[id]) {
+      delete this.education[id];
+    }
+    if (id === this.educationInFocus) {
+      this.educationInFocus = '';
+    }
+    this.saveUser();
+  }
+
   getEducationInFocus(): Education {
-    const education = this.education[this.educationInFocus];
+    const education: Education = this.education[this.educationInFocus];
     if (education) {
       return education;
     }
     return new Education();
+  }
+
+  setEducationInFocus(id: string): void {
+    if (this.education[id]) {
+      this.educationInFocus = id;
+      this.saveUser();
+    }
   }
 
   updateEducation(university: Education): void {

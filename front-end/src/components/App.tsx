@@ -11,7 +11,7 @@ const App = () => {
   const [user, setUser] = useState(new User(''));
   const userContext = { user, setUser };
   // Views State & Context
-  const [currentView, setCurrentView] = useState(Views.EducationModal);
+  const [currentView, setCurrentView] = useState(Views.Intro);
   const viewContext = { currentView, setCurrentView, Views };
   return (
     <ViewsContext.Provider value={viewContext}>

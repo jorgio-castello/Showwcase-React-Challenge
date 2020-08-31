@@ -5,7 +5,8 @@ import { UserContext, ViewsContext } from '../models/App';
 const EducationModal = () => {
   const { user, setUser } = useContext(UserContext);
   const { currentView, setCurrentView, Views } = useContext(ViewsContext);
-  const [education, setEducation] = useState(new Education());
+  const [education, setEducation] = useState(user.getEducationInFocus());
+  const [newDescription, setNewDescription] = useState('');
 
   if (currentView !== Views.EducationModal) {
     return null;
@@ -13,8 +14,7 @@ const EducationModal = () => {
 
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
-    user.education.push(education);
-    user.education.sort((a, b) => a.endYear - b.endYear);
+    user.updateEducation(education);
     setUser(user);
     setCurrentView(Views.Main);
   }
@@ -23,7 +23,6 @@ const EducationModal = () => {
     const inputElement: string | null = e.currentTarget.getAttribute('id');
     const inputValue: string | number | null = e.target.value;
     if (inputElement && inputElement in education) {
-      console.log(inputElement, inputValue);
       setEducation(prevState => ({
         ...prevState,
         [inputElement]: inputValue
@@ -42,17 +41,14 @@ const EducationModal = () => {
     }
   }
 
-  const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const textAreaElement: string | null = e.currentTarget.getAttribute('id');
-    const textAreaValue: string | null = e.target.value;
+  const handleDescriptionChange = (e: SyntheticEvent): void => {
     const description = education.description;
-    description.push(textAreaValue);
-    if (textAreaElement && textAreaElement in education) {
-      setEducation(prevState => ({
-        ...prevState,
-        description,
-      }));
-    }
+    description.push(newDescription);
+    setEducation(prevState => ({
+      ...prevState,
+      description,
+    }));
+    setNewDescription('');
   }
 
   return (
@@ -88,7 +84,8 @@ const EducationModal = () => {
       </label>
       <label>
         Description
-        <input id='description' placeholder="Include any highlights of your educational experience (optional)" value={education.description} onChange={handleDescriptionChange} />
+        <input id='description' placeholder="Include any highlights of your educational experience (optional)" value={newDescription} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewDescription(e.target.value)} />
+        <button type="button" onClick={handleDescriptionChange}>Add Description</button>
       </label>
       <button type="submit">Submit</button>
     </form>

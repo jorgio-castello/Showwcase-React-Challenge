@@ -1,4 +1,5 @@
 interface Education {
+  id: string,
   school: string,
   degree: string,
   fieldOfStudy: string,
@@ -11,6 +12,7 @@ interface Education {
 class Education {
   [indexSignature: string]: number | string | string[];
   constructor(
+    id?: string,
     school?: string,
     degree?: string,
     fieldOfStudy?: string,
@@ -25,7 +27,7 @@ class Education {
     this.startYear = startYear || 2020;
     this.endYear = endYear || 2020;
     this.grade = grade || 4;
-    this.description = description || [''];
+    this.description = description || [];
   }
 
   static generateYearOptions(startYear: number, endYear: number): number[] {

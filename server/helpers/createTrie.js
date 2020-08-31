@@ -16,7 +16,7 @@ fs.readFile(path.join(__dirname, '../data/', trieDataPath), 'utf-8', (err, unive
   // assemble Trie
   const universityData = universityDataStr.split(os.EOL);
   universityData.forEach(university => {
-    trie.insert(university[0]);
+    trie.insert(university);
   });
 
   // write Trie to json file

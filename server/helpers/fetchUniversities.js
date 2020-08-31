@@ -8,7 +8,7 @@ const { UNIVERSITY_FILENAME, UNIVERSITY_SEARCH_URL } = require('../config');
 const UNIVERSITY_OUTPUT_FILEPATH = path.join(__dirname, `../data/${UNIVERSITY_FILENAME}`);
 
 async function fetchUniversities(letter) {
-  return fetch(`${UNIVERSITY_SEARCH_URL}${letter}`).then(res => res.json());
+  return fetch(`${UNIVERSITY_SEARCH_URL}${letter}&country=United%20States`).then(res => res.json());
 }
 
 const init = (universityObj, idx, callback) => {

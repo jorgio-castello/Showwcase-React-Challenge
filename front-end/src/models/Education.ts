@@ -1,30 +1,39 @@
 interface Education {
-  schoolName: string,
+  school: string,
   degree: string,
   fieldOfStudy: string,
   startYear: number,
   endYear: number,
   grade: number,
-  description: string,
+  description: string[],
 }
 
 class Education {
+  [indexSignature: string]: number | string | string[];
   constructor(
-    schoolName: string,
-    degree: string,
-    fieldOfStudy: string,
-    startYear: number,
-    endYear: number,
-    grade: number,
-    description: string,
+    school?: string,
+    degree?: string,
+    fieldOfStudy?: string,
+    startYear?: number,
+    endYear?: number,
+    grade?: number,
+    description?: string[],
   ) {
-    this.schoolName = schoolName;
-    this.degree = degree;
-    this.fieldOfStudy = fieldOfStudy;
-    this.startYear = startYear;
-    this.endYear = endYear;
-    this.grade = grade;
-    this.description = description;
+    this.school = school || '';
+    this.degree = degree || '';
+    this.fieldOfStudy = fieldOfStudy || '';
+    this.startYear = startYear || 2020;
+    this.endYear = endYear || 2020;
+    this.grade = grade || 4;
+    this.description = description || [''];
+  }
+
+  static generateYearOptions(startYear: number, endYear: number): number[] {
+    const result: number[] = [];
+    for (endYear; endYear >= startYear; endYear -= 1) {
+      result.push(endYear);
+    }
+    return result;
   }
 }
 

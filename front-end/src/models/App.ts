@@ -5,6 +5,7 @@ export enum Views {
   Intro,
   CreateUser,
   Main,
+  EducationModal,
 }
 
 type UserContextProps = {

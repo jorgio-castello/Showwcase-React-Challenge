@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, SyntheticEvent } from 'react';
+import React, { useContext, useState, SyntheticEvent } from 'react';
 import { ViewsContext } from '../../models/App';
 
 const Intro = () => {

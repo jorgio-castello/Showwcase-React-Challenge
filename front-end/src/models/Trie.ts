@@ -52,13 +52,16 @@ class Trie {
       }
       this.findAllUniversities(node, universities);
     }
-    return universities;
+    return universities.slice(0, 5);
   }
 
   private findAllUniversities(node: TrieNode, universities: string[]): void {
     if (node.end) {
       universities.unshift(TrieNode.getUniversity.call(node));
     }
+
+    if (universities.length >= 5) return;
+
     for (const letter in node.children) {
       this.findAllUniversities(node.children[letter], universities);
     }

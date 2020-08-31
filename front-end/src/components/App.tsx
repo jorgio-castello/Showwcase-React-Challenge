@@ -13,7 +13,6 @@ const App = () => {
   // University Trie State & Context
   const [trie, setTrie] = useState(new Trie());
   const trieContext = { trie, setTrie };
-
   // User State & Context
   const [user, setUser] = useState(new User(''));
   const userContext = { user, setUser };
@@ -25,7 +24,8 @@ const App = () => {
     if (trie.root === null) {
       getTrie()
         .then(rawTrie => {
-          const universityTrie = Trie.copy(parse(rawTrie));
+          const trie = parse(rawTrie);
+          const universityTrie = Trie.copy(trie.root);
           setTrie(universityTrie);
         });
     }

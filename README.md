@@ -1,4 +1,8 @@
 # Showwcase Developer Challenge
+Quick Start from Root
+```
+bash init.bash
+```
 
 ## General idea
 

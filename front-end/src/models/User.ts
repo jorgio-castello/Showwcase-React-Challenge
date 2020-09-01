@@ -66,7 +66,7 @@ class User {
 
   retrieveEducation(): Education[] {
     const education: Education[] = Object.values(this.education);
-    return education.sort((a, b) => a.startYear - b.startYear);
+    return education.sort((a, b) => b.startYear - a.startYear);
   }
 
   saveUser(): void {

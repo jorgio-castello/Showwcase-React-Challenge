@@ -3,6 +3,7 @@ import { fetchSearchResults } from '../fetchHelpers/index';
 import Education from '../models/Education';
 import { universitySearch, searchCacheType } from '../models/AutoComplete';
 import { TrieContext, UserContext, ViewsContext } from '../models/App';
+import { ModalStyles } from '../assets/styles';
 
 const EducationModal = () => {
   // Contexts
@@ -12,9 +13,10 @@ const EducationModal = () => {
 
   // States
   const [education, setEducation] = useState(new Education());
-  const [newDescription, setNewDescription] = useState('');
   const [universitySearchResults, setUniversitySearchResults] = useState(universitySearch);
   const [searchCache, setSearchCache] = useState(searchCacheType);
+  let buttonIdx: number | undefined;
+  const [activeSearchBtnIdx, setActiveSearchBtnIdx] = useState(buttonIdx);
 
   // Effects
   useEffect(() => {
@@ -51,6 +53,37 @@ const EducationModal = () => {
     if (result.length === 0) updateCacheAndSearchResults(query, [query]);
   }
 
+  const handleSearchKeyPress = (e: React.KeyboardEvent): void => {
+    const key = e.keyCode;
+    let updatedActiveSearchBtnIdx: number | undefined;
+    if (universitySearchResults.length) {
+      if (key === 13) handleSchoolSelection();
+      else if (key === 38) { // Moving up
+        if (activeSearchBtnIdx === undefined) return;
+        else if (activeSearchBtnIdx === 0) updatedActiveSearchBtnIdx = undefined;
+        else updatedActiveSearchBtnIdx = activeSearchBtnIdx - 1;
+      }
+      else if (key === 40) { // Moving down
+        if (activeSearchBtnIdx === universitySearchResults.length - 1) return;
+        else if (activeSearchBtnIdx === undefined) updatedActiveSearchBtnIdx = 0;
+        else updatedActiveSearchBtnIdx = activeSearchBtnIdx + 1;
+      }
+      setActiveSearchBtnIdx(updatedActiveSearchBtnIdx);
+    }
+  }
+
+  const handleSchoolSelection = (): void => {
+    let school: string;
+    if (activeSearchBtnIdx !== undefined) {
+      school = universitySearchResults[activeSearchBtnIdx];
+      setEducation((prevState) => ({
+        ...prevState,
+        school,
+      }));
+      setUniversitySearchResults([]);
+    }
+  }
+
   const updateCacheAndSearchResults = (query: string, result: string[]): void => {
     setSearchCache((prevState) => ({
       ...prevState,
@@ -81,16 +114,6 @@ const EducationModal = () => {
     }
   }
 
-  const handleDescriptionChange = (e: SyntheticEvent): void => {
-    const description = education.description;
-    description.push(newDescription);
-    setEducation(prevState => ({
-      ...prevState,
-      description,
-    }));
-    setNewDescription('');
-  }
-
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
     user.updateEducation(education);
@@ -109,49 +132,103 @@ const EducationModal = () => {
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <h3>Add Education</h3>
-        <label>
-          Coding School / College / University / etc.
-        <input id="school" type="text" placeholder="Search for your school" value={education.school} onChange={(e: ChangeEvent<HTMLInputElement>) => handleUniversityQuery(e.target.value)} required />
-        </label>
-        <label>
-          Type of Degree or Certificate
-        <input id="degree" type="text" placeholder="Enter your degree" value={education.degree} onChange={handleInputChange} required />
-        </label>
-        <label>
-          What did you study?
-        <input id="fieldOfStudy" type="text" placeholder="Enter your field of study" value={education.fieldOfStudy} onChange={handleInputChange} required />
-        </label>
-        <label>
-          When did you start?
-        <select id="startYear" value={education.startYear} onChange={handleSelectChange} required>
+    <div className={ModalStyles.container}>
+      <form className={ModalStyles.form} onSubmit={handleSubmit} autoComplete="off">
+        <h3 className={ModalStyles.addEducation}>Add Education</h3>
+        <div className={ModalStyles.inputContainer}>
+          <input
+            onKeyDown={handleSearchKeyPress}
+            className={ModalStyles.inputStyling}
+            id="school"
+            type="text"
+            placeholder="Search for your school"
+            value={education.school}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleUniversityQuery(e.target.value)} required
+          />
+        </div>
+        <div className={ModalStyles.autoCompleteContainer}>
+          {universitySearchResults.map((university, idx) => (
+            <button className={idx === activeSearchBtnIdx ? ModalStyles.autoCompleteActiveBtn : ModalStyles.autoCompleteInactiveBtn}>{university}</button>)
+          )}
+        </div>
+        <div className={ModalStyles.inputContainer}>
+          <input
+            id="degree"
+            className={ModalStyles.inputStyling}
+            type="text"
+            placeholder="Enter your degree"
+            value={education.degree}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className={ModalStyles.inputContainer}>
+          <input
+            id="fieldOfStudy"
+            className={ModalStyles.inputStyling}
+            type="text"
+            placeholder="Enter your field of study"
+            value={education.fieldOfStudy}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className={ModalStyles.rangeContainer}>
+          <label className={ModalStyles.labelStyles}>
+            When did you start?
+          </label>
+          <select
+            id="startYear"
+            className={ModalStyles.rangeButton}
+            value={education.startYear}
+            onChange={handleSelectChange}
+            required
+          >
             {Education.generateYearOptions(1970, 2022).map((year) => <option key={year} value={year}>{year}</option>)}
           </select>
-        </label>
-        <label>
-          When did you end? (Actual or Expected)
-        <select id="endYear" value={education.endYear} onChange={handleSelectChange} required>
+        </div>
+        <div className={ModalStyles.rangeContainer}>
+          <label className={ModalStyles.labelStyles}>
+            When did you end?
+          </label>
+          <select
+            id="endYear"
+            className={ModalStyles.rangeButton}
+            value={education.endYear}
+            onChange={handleSelectChange}
+            required
+          >
             {Education.generateYearOptions(education.startYear, education.startYear + 10).map(year => <option key={year} value={year}>{year}</option>)}
           </select>
-        </label>
-        <label>
-          What grade did you get? (GPA)
-        <input id="grade" type="number" placeholder="Enter your grade point average" min={0} max={4} step={0.1} required value={education.grade} onChange={handleInputChange} />
-        </label>
-        <label>
-          Description
-        <input id='description' placeholder="Include any highlights of your educational experience (optional)" value={newDescription} onChange={(e: ChangeEvent<HTMLInputElement>) => setNewDescription(e.target.value)} />
-          {education.id ? <button id={education.id} type="button" onClick={handleDescriptionChange}>Add Description</button> : null}
-        </label>
-        {education.id ? <button id={education.id} type="button" onClick={handleDelete}>Delete Education</button> : null}
-        <button type="submit">Submit</button>
+        </div>
+        <div className={ModalStyles.rangeContainer}>
+          <label className={ModalStyles.labelStyles}>
+            What grade did you get?
+          </label>
+          <input
+            id="grade"
+            type="number"
+            className={ModalStyles.rangeButton}
+            min={0.0}
+            max={4.0}
+            step={0.1}
+            required
+            value={education.grade}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className={ModalStyles.descriptionContainer}>
+          <input
+            id='description'
+            className={ModalStyles.inputStyling}
+            placeholder="Add a highlight"
+            value={education.description} onChange={handleInputChange}
+          />
+        </div>
+        <button className={ModalStyles.submitButton} type="submit">Submit</button>
+        {education.id ? <button className={ModalStyles.deleteButton} id={education.id} type="button" onClick={handleDelete}>Delete</button> : null}
       </form>
-      <ul>
-        {universitySearchResults.map(university => <li>{university}</li>)}
-      </ul>
-    </>
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ interface Education {
   startYear: number,
   endYear: number,
   grade: number,
-  description: string[],
+  description: string,
 }
 
 class Education {
@@ -19,7 +19,7 @@ class Education {
     startYear?: number,
     endYear?: number,
     grade?: number,
-    description?: string[],
+    description?: string,
   ) {
     this.school = school || '';
     this.degree = degree || '';
@@ -27,7 +27,7 @@ class Education {
     this.startYear = startYear || 2020;
     this.endYear = endYear || 2020;
     this.grade = grade || 4;
-    this.description = description || [];
+    this.description = description || '';
   }
 
   static generateYearOptions(startYear: number, endYear: number): number[] {

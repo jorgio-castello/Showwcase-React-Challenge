@@ -8,6 +8,7 @@ import Intro from './LandingViews/Intro';
 import CreateUser from './LandingViews/CreateUser';
 import Main from './Main';
 import EducationModal from './EducationModal';
+import { AppStyles } from '../assets/styles';
 
 const App = () => {
   // University Trie State & Context
@@ -32,16 +33,18 @@ const App = () => {
   }, [trie]);
 
   return (
-    <ViewsContext.Provider value={viewContext}>
-      <Intro />
-      <UserContext.Provider value={userContext}>
-        <CreateUser />
-        <Main />
-        <TrieContext.Provider value={trieContext}>
-          <EducationModal />
-        </TrieContext.Provider>
-      </UserContext.Provider>
-    </ViewsContext.Provider>
+    <div className={AppStyles.container}>
+      <ViewsContext.Provider value={viewContext}>
+        <Intro />
+        <UserContext.Provider value={userContext}>
+          <CreateUser />
+          <Main />
+          <TrieContext.Provider value={trieContext}>
+            <EducationModal />
+          </TrieContext.Provider>
+        </UserContext.Provider>
+      </ViewsContext.Provider>
+    </div>
   );
 }
 
